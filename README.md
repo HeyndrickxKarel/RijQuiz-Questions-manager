@@ -1,4 +1,4 @@
-# vue-rijquiz-questionsmanager
+# Rijquiz-QuestionsManager
 
 ## Project setup
 ```

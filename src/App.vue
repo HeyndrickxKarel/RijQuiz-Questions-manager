@@ -2,10 +2,12 @@
   <div id="app">
 
     <nav>
-      <router-link to="/">Add questions</router-link>
-      <router-link to="/about">About</router-link>
+      <router-link to="/" v-on:click.native="setActive('addQuestions')" :class="{active: isActive('addQuestions')}">Add questions</router-link>
+      <router-link to="/about" v-on:click.native="setActive('about')" :class="{ active: isActive('about') }">About</router-link>
     </nav>
-    <router-view/>
+  <transition name="router-animation">
+   <router-view/>
+</transition>
   </div>
 </template>
 
@@ -13,7 +15,20 @@
 
 export default {
   name: 'app',
+  data(){
+    return{
+      activeItem: 'addQuestions'
+    }
+  },
+  methods: {
+    setActive(item){
+      this.activeItem = item;
+    },
+    isActive(item){
+      return this.activeItem === item;
 
+    }
+  }
 }
 </script>
 
@@ -48,7 +63,7 @@ nav a {
   border: 1px solid #178656;
   transition: 0.4s;
 }
-nav a:hover {
+nav a:hover, .active {
   color: white;
   background-color: #178656;
 
@@ -65,4 +80,36 @@ nav a:last-child{
 a {
   color: #178656;
 }
+.page {
+  position: fixed;
+  width: inherit;
+}.router-animation-enter-active {
+  animation: coming 1s;
+  animation-delay: .5s;
+  opacity: 0;
+}
+.router-animation-leave-active {
+  animation: going 1s;
+}
+
+@keyframes going {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+}
+@keyframes coming {
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 </style>

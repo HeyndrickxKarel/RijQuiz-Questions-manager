@@ -1,5 +1,5 @@
 <template>
-    <div class="about">
+    <div class="about page">
           <img alt="Vue logo" src="../assets/logo.png">
         <h1>Questions manager</h1>
     <p>This app allows you to add questions for the RijQuiz app.</p>

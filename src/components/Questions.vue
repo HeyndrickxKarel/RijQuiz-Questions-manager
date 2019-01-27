@@ -1,5 +1,5 @@
 <template>
-  <div id="addQuestionContainer">
+  <div id="addQuestionContainer" class="questions page">
     <div id="addQuestions">
       <h2>Add a question</h2>
       <form @submit.prevent="addQuestion">
@@ -229,7 +229,7 @@ input.questionanswer {
   font-size: 1.1em;
   color: #3e6791;
   position: relative;
-  left: 10px;
+  left: 20px;
 }
 textarea.questiontext:focus,
 input.questiontext:focus {
@@ -254,7 +254,7 @@ input[type|="submit"] {
   -webkit-transition: 0.3s;
   transition: 0.3s;
   cursor: pointer;
-  margin: 10px;
+  margin: 10px 0px;
   width: 30%;
   display: inline-block;
   padding: 10px;
