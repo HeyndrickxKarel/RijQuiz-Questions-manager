@@ -3,6 +3,7 @@
 
     <nav>
       <router-link to="/" v-on:click.native="setActive('addQuestions')" :class="{active: isActive('addQuestions')}">Add questions</router-link>
+      <router-link to="/questionlist" v-on:click.native="setActive('questionlist')" :class="{ active: isActive('questionlist') }">Questionlist</router-link>
       <router-link to="/about" v-on:click.native="setActive('about')" :class="{ active: isActive('about') }">About</router-link>
     </nav>
   <transition name="router-animation">
@@ -35,7 +36,6 @@ export default {
 <style>
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
-
 body {
     background-color: #EEEEEE;
   font-family: 'Avenir', 'Montserrat',Helvetica, Arial, sans-serif;
@@ -74,6 +74,7 @@ nav a:first-child{
 }
 nav a:last-child{
     border-top-right-radius: 3px;
+    border-left: none;
     border-bottom-right-radius: 3px;
 }
 a {

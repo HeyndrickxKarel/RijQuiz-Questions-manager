@@ -5,6 +5,7 @@ import router from './router';
 import {library} from '@fortawesome/fontawesome-svg-core'
 import {faCoffee, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+import BootstrapVue from 'bootstrap-vue'
 
 library.add([faCoffee, faTrashAlt])
 
@@ -15,6 +16,9 @@ Vue.config.productionTip = false
 Vue.use(VeeValidate,{
   validity: true
 });
+
+Vue.use(BootstrapVue);
+
 Vue.config.productionTip = false
 
 new Vue({
