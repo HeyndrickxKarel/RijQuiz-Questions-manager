@@ -21,24 +21,24 @@
         <input
           type="text"
           class="questionanswer"
-          placeholder="First answer"
-          v-model="question.answer1"
+          placeholder="Correct: first answer"
+          v-model="question.rightAnswer"
           v-validate="'min:1'"
           name="questionanswer1"
         >
         <input
           type="text"
           class="questionanswer"
-          placeholder="Second answer"
-          v-model="question.answer2"
+          placeholder="Wrong: second answer"
+          v-model="question.answers[1]"
           v-validate="'min:1'"
           name="questionanswer2"
         >
         <input
           type="text"
           class="questionanswer"
-          placeholder="Third answer"
-          v-model="question.answer3"
+          placeholder="Wrong: third answer"
+          v-model="question.answers[2]"
           v-validate="'min:1'"
           name="questionanswer3"
         >
@@ -57,20 +57,10 @@
             enter-active-class="animated bounceInUp"
             leave-active-class="animated bounceOutDown"
           >
-            <li v-for="(data, index) in questions" :key="index+0">
-              <div class="existingQuestionContainer">
-                <span class="indexNr">
-                  <h5>{{index}}</h5>
-                </span>
+            <li v-for="(data, index) in filteredQuestions" :key="index+0">
                 <div class="existingQuestion">
-                  <h5>{{data.question.text}}</h5>
-                  <p>{{data.question.answer1}}</p>
-                  <p>{{data.question.answer2}}</p>
-                  <p>{{data.question.answer3}}</p>
-                  <font-awesome-icon icon="trash-alt" class="iconButton" v-on:click="remove(index)"/>
-
+                  <h5>{{data.text}}</h5>                  
                 </div>
-              </div>
             </li>
           </transition-group>
         </ul>
@@ -97,9 +87,9 @@
             </div>
             <p class="appInstruction">Antwoorden</p>
             <div class="scrollableAnswer">
-              <p class="appAnswer">{{question.answer1 == ""? "3 meter": question.answer1}}</p>
-              <p class="appAnswer">{{question.answer2 == ""? "2 meter": question.answer2}}</p>
-              <p class="appAnswer">{{question.answer3 == ""? "4 meter": question.answer3}}</p>
+              <p class="appAnswer">{{question.answers[0] == ""? "3 meter": question.answers[0]}}</p>
+              <p class="appAnswer">{{question.answers[1] == ""? "2 meter": question.answers[1]}}</p>
+              <p class="appAnswer">{{question.answers[2] == ""? "4 meter": question.answers[2]}}</p>
             </div>
             <p class="nextButton">Volgende</p>
           </div>
@@ -121,30 +111,50 @@ export default {
     return {
       question: {
         text: "",
-        answer1: "",
-        answer2: "",
-        answer3: ""
+        answers: ["", "", ""],
+        rightAnswer: ""
       },
-      questions: []
+      questions: [],                     
     };
   },
-  methods: {
+  computed: {
+    filteredQuestions(){
+          let questions = this.questions
+          if(this.question.text != ""){
+            questions = questions.filter((q) => {
+              return q.text.indexOf(this.question.text) !== -1
+            })
+          }
+          return questions
+        }
+  }, 
+  methods: {        
     addQuestion() {
       this.$validator.validateAll().then(result => {
+        
+        //add the correct answer to the answers array as well
+        this.question.answers[0] = this.question.rightAnswer
+
         if (result) {
           this.questions.push({ question: this.question });
           this.question = {
             text: "",
-            answer1: "",
-            answer2: "",
-            answer3: ""
+            answers: ["", "", ""],
+            rightAnswer: ""
           };
         }
       });
     },
-    remove(id){
-      this.questions.splice(id,1);
-    }
+    remove(id) {
+      this.questions.splice(id, 1);
+    },
+
+  },
+  created : function (){
+    fetch("https://rijquiz-backend.herokuapp.com/api/questions")
+        .then(res => res.json()).then(data => {
+          this.questions = data;
+        });
   }
 };
 </script>
@@ -350,9 +360,7 @@ div.submitbutton {
   overflow-y: scroll;
   height: 190px;
 }
-.existingQuestionContainer h5 {
-  margin: 0;
-}
+
 .indexNr {
   position: absolute;
   background-color: #2a86bb;
@@ -363,12 +371,14 @@ div.submitbutton {
 }
 .existingQuestion {
   padding: 20px;
-  padding-top: 40px;
 }
 .existingQuestion p {
   text-align: left;
   font-size: 0.8em;
   padding: 0px;
+}
+.existingQuestion h5 {
+  margin: 0
 }
 
 @keyframes slide-down {
@@ -381,10 +391,13 @@ div.submitbutton {
     transform: translateY(0);
   }
 }
-.iconButton{
+.iconButton {
   float: right;
   cursor: pointer;
-      position: relative;
-    top: -10px;
+  position: relative;
+  top: -10px;
+}
+.overflow-y{
+  overflow-y: scroll;
 }
 </style>

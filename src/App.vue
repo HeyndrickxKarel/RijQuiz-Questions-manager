@@ -42,10 +42,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  margin-top: 60px;
   grid-template-rows: auto;
   justify-items: center;
-  padding-top: 50px;
+  padding-top: 20px;
   display: grid;
   text-align: center;
 }
