@@ -1,25 +1,32 @@
 <template>
-  <div class="questionlist page">     
-
-    <div id="listQuestions">      
-        <h2 v-if="questions.length == 0">There are no questions.</h2>
-        <h2 v-if="questions.length > 0">This is an overview of all the existing questions.</h2>
-        <hr>
-        <ul class="questions">
-          <transition-group
-            name="list"
-            enter-active-class="animated bounceInUp"
-            leave-active-class="animated bounceOutDown"
-          >
-            <li v-for="(data, index) in questions" :key="index+0">
-              <div class="existingQuestionContainer">
-                <span class="indexNr">
-                  <h5>{{index + 1}}</h5>
-                </span>
-                <div class="existingQuestion">
-                  <h5>{{data.text}}</h5>
-                  <p>{{data.answers[0]}} &#124; {{data.answers[1]}} &#124; {{data.answers[2]}}</p>
-                  <p>Correct answer: {{data.rightAnswer}}</p>
+  <div class="questionlist page">
+    <div id="listQuestions">
+      <h2 v-if="questions.length == 0">There are no questions.</h2>
+      <h2 v-if="questions.length > 0">This is an overview of all the existing questions.</h2>
+      <hr>
+      <ul class="questions">
+        <transition-group
+          name="list"
+          enter-active-class="animated bounceInUp"
+          leave-active-class="animated bounceOutDown"
+        >
+          <li v-for="(data, index) in questions" :key="index+0">
+            <div class="existingQuestionContainer">      
+              <div class="existingQuestion">
+                <div class="questionHeader">
+                  <h4>{{data.text}}</h4>
+                </div>
+                <div class="questionBody">
+                  <h5>Possible answers:</h5>
+                  <p>
+                    {{data.answers[0]}}
+                    <br>
+                    {{data.answers[1]}}
+                    <br>
+                    {{data.answers[2]}}
+                  </p>
+                  <h5>Correct answer:</h5>
+                  <p>{{data.rightAnswer}}</p>
                   <font-awesome-icon
                     icon="trash-alt"
                     class="iconButton"
@@ -27,10 +34,11 @@
                   />
                 </div>
               </div>
-            </li>
-          </transition-group>
-        </ul>
-      </div>
+            </div>
+          </li>
+        </transition-group>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -40,7 +48,7 @@ export default {
   data() {
     return {
       question: {
-        _id:"",
+        _id: "",
         text: "",
         answers: ["", "", ""],
         rightAnswer: ""
@@ -48,20 +56,17 @@ export default {
       questions: []
     };
   },
-  methods: {    
-    loadQuestions() {
-      
-    },    
+  methods: {
+    loadQuestions() {},
     addQuestion() {
       this.$validator.validateAll().then(result => {
-        
         //add the correct answer to the answers array as well
-        this.question.answers[0] = this.question.rightAnswer
+        this.question.answers[0] = this.question.rightAnswer;
 
         if (result) {
           this.questions.push({ question: this.question });
           this.question = {
-            _id:"",
+            _id: "",
             text: "",
             answers: ["", "", ""],
             rightAnswer: ""
@@ -71,18 +76,19 @@ export default {
     },
     removeQuestion(id) {
       this.questions.splice(id, 1);
-      fetch("https://rijquiz-backend.herokuapp.com/api/question/" +id, {
-          method:"DELETE"
+      fetch("https://rijquiz-backend.herokuapp.com/api/question/" + id, {
+        method: "DELETE"
       }).then(() => {
-          alert("deleted");
-        });
+        alert("deleted");
+      });
     }
   },
-  created : function (){
+  created: function() {
     fetch("https://rijquiz-backend.herokuapp.com/api/questions")
-        .then(res => res.json()).then(data => {
-          this.questions = data;
-        });
+      .then(res => res.json())
+      .then(data => {
+        this.questions = data;
+      });
   }
 };
 </script>
@@ -103,10 +109,12 @@ ul {
 }
 li {
   font-size: 1.3em;
-  background-color: #e0edf4;
-  border-left: 5px solid #3eb3f6;
-  margin-bottom: 2px;
+  background-color: white;
+  border-radius: 20px;
+  margin-bottom: 10px;
   color: #3e5252;
+  -webkit-box-shadow: 3px 4px 15px -6px rgba(42, 46, 43, 0.77);
+  box-shadow: 3px 4px 15px -6px rgba(42, 46, 43, 0.77);
 }
 .container {
   box-shadow: 0px 0px 40px lightgray;
@@ -157,9 +165,16 @@ div.submitbutton {
   text-align: center;
   border-bottom-right-radius: 50px;
 }
-.existingQuestion {
-  padding: 20px;
-  padding-top: 40px;
+.questionHeader{
+    background-color: #088755;
+    color:white;
+}
+.questionHeader h4{
+padding: 20px;
+margin: 0px;
+}
+.questionBody{
+    padding: 20px;
 }
 .existingQuestion p {
   text-align: left;

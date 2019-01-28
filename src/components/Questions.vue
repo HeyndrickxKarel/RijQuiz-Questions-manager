@@ -58,9 +58,9 @@
             leave-active-class="animated bounceOutDown"
           >
             <li v-for="(data, index) in filteredQuestions" :key="index+0">
-                <div class="existingQuestion">
-                  <h5>{{data.text}}</h5>                  
-                </div>
+              <div class="existingQuestion">
+                <h5>{{data.text}}</h5>
+              </div>
             </li>
           </transition-group>
         </ul>
@@ -87,7 +87,7 @@
             </div>
             <p class="appInstruction">Antwoorden</p>
             <div class="scrollableAnswer">
-              <p class="appAnswer">{{question.answers[0] == ""? "3 meter": question.answers[0]}}</p>
+              <p class="appAnswer">{{question.rightAnswer == ""? "3 meter": question.rightAnswer}}</p>
               <p class="appAnswer">{{question.answers[1] == ""? "2 meter": question.answers[1]}}</p>
               <p class="appAnswer">{{question.answers[2] == ""? "4 meter": question.answers[2]}}</p>
             </div>
@@ -114,29 +114,36 @@ export default {
         answers: ["", "", ""],
         rightAnswer: ""
       },
-      questions: [],                     
+      questions: []
     };
   },
   computed: {
-    filteredQuestions(){
-          let questions = this.questions
-          if(this.question.text != ""){
-            questions = questions.filter((q) => {
-              return q.text.indexOf(this.question.text) !== -1
-            })
-          }
-          return questions
-        }
-  }, 
-  methods: {        
+    filteredQuestions() {
+      let questions = this.questions;
+      if (this.question.text != "") {
+        questions = questions.filter(q => {
+          return q.text.indexOf(this.question.text) !== -1;
+        });
+      }
+      return questions;
+    }
+  },
+  methods: {
     addQuestion() {
       this.$validator.validateAll().then(result => {
-        
-        //add the correct answer to the answers array as well
-        this.question.answers[0] = this.question.rightAnswer
-
         if (result) {
-          this.questions.push({ question: this.question });
+          //add the correct answer to the answers array as well
+          this.question.answers[0] = this.question.rightAnswer;
+
+          fetch("https://rijquiz-backend.herokuapp.com/api/question",{
+            body: JSON.stringify(this.question),
+            method: "POST",
+            headers: {
+              "Content-Type":"application/json",
+            }
+          })          
+
+          this.questions.push({ question: this.question },0);
           this.question = {
             text: "",
             answers: ["", "", ""],
@@ -144,15 +151,14 @@ export default {
           };
         }
       });
-    },
-    
-
+    }
   },
-  created : function (){
+  created: function() {
     fetch("https://rijquiz-backend.herokuapp.com/api/questions")
-        .then(res => res.json()).then(data => {
-          this.questions = data;
-        });
+      .then(res => res.json())
+      .then(data => {
+        this.questions = data;
+      });
   }
 };
 </script>
@@ -375,7 +381,7 @@ div.submitbutton {
   padding: 0px;
 }
 .existingQuestion h5 {
-  margin: 0
+  margin: 0;
 }
 
 @keyframes slide-down {
@@ -394,7 +400,7 @@ div.submitbutton {
   position: relative;
   top: -10px;
 }
-.overflow-y{
+.overflow-y {
   overflow-y: scroll;
 }
 </style>
